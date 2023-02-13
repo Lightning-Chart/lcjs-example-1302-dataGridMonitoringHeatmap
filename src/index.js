@@ -28,7 +28,14 @@ const exampleTrends = [
 const exampleTrendsCount = exampleTrends.length
 const exampleDataCount = 50 * 1000
 
-const dashboard = lightningChart()
+let license = undefined
+try {
+    license = LCJS_LICENSE
+} catch (e) {}
+
+const dashboard = lightningChart({
+    license: license,
+})
     .Dashboard({
         // theme: Themes.darkGold
         numberOfColumns: 1,
