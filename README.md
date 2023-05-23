@@ -31,6 +31,8 @@ For more information about LightningChart JS Data Grid, click [here](https://lig
 
 ## API Links
 
+* [Data Grid]
+* [Chart XY]
 
 
 ## Support
@@ -54,4 +56,6 @@ Direct developer email support can be purchased through a [Support Plan][4] or b
 © LightningChart Ltd 2009-2022. All rights reserved.
 
 
+[Data Grid]: https://lightningchart.com/lightningchart-js-api-documentation/v4.1.0/classes/DataGrid.html
+[Chart XY]: https://lightningchart.com/lightningchart-js-api-documentation/v4.1.0/classes/ChartXY.html
 
