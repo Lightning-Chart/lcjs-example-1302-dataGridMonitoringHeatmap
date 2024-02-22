@@ -60,7 +60,7 @@ const seriesXYList = exampleTrends.map((trend) =>
 const axisX = chartXY
     .getDefaultAxisX()
     .setScrollStrategy(AxisScrollStrategies.progressive)
-    .setInterval({ start: -60 * 1000, end: 0, stopAxisAfter: false })
+    .setDefaultInterval((state) => ({ end: state.dataMax, start: (state.dataMax ?? 0) - 60 * 1000, stopAxisAfter: false }))
     .setTickStrategy(AxisTickStrategies.Time)
 
 const axisXTop = chartXY
