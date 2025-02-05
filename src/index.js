@@ -10,6 +10,7 @@ const {
     LegendBoxBuilders,
     UIElementBuilders,
     UIOrigins,
+    emptyFill,
     Themes,
 } = lcjs
 const { createProgressiveTraceGenerator } = xydata
@@ -28,15 +29,10 @@ const exampleTrends = [
 const exampleTrendsCount = exampleTrends.length
 const exampleDataCount = 50 * 1000
 
-let license = undefined
-try {
-    license = LCJS_LICENSE
-} catch (e) {}
-
 // NOTE: Using `Dashboard` is no longer recommended for new applications. Find latest recommendations here: https://lightningchart.com/js-charts/docs/basic-topics/grouping-charts/
 const dashboard = lightningChart({
-    license: license,
-})
+            resourcesBaseUrl: new URL(document.head.baseURI).origin + new URL(document.head.baseURI).pathname + 'resources/',
+        })
     .Dashboard({
         theme: Themes[new URLSearchParams(window.location.search).get('theme') || 'darkGold'] || undefined,
         numberOfColumns: 1,
@@ -53,8 +49,9 @@ const dataGrid = dashboard
 
 const seriesXYList = exampleTrends.map((trend) =>
     chartXY
-        .addLineSeries({ dataPattern: { pattern: 'ProgressiveX' } })
-        .setDataCleaning({ minDataPointCount: 1 })
+        .addPointLineAreaSeries({ dataPattern: 'ProgressiveX' })
+        .setAreaFillStyle(emptyFill)
+        .setMaxSampleCount(50_000)
         .setName(trend.name),
 )
 const axisX = chartXY
@@ -67,20 +64,17 @@ const axisXTop = chartXY
     .addAxisX({ opposite: true })
     .setTickStrategy(AxisTickStrategies.Empty)
     .setStrokeStyle(emptyLine)
-    .setMouseInteractions(false)
+    .setPointerEvents(false)
 synchronizeAxisIntervals(axisX, axisXTop)
 const indicator15s = axisXTop.addCustomTick(UIElementBuilders.AxisTickMajor).setTextFormatter((_) => '-15 s')
 
-const legend = chartXY
-    .addLegendBox(LegendBoxBuilders.HorizontalLegendBox, { x: chartXY.getDefaultAxisX(), y: chartXY.getDefaultAxisY() })
-    .add(chartXY)
-const positionLegend = () => {
+const legend = chartXY.addLegendBox(LegendBoxBuilders.HorizontalLegendBox, chartXY.coordsRelative).add(chartXY)
+chartXY.addEventListener('layoutchange', (event) => {
     legend.setOrigin(UIOrigins.CenterBottom).setPosition({
-        x: (chartXY.getDefaultAxisX().getInterval().start + chartXY.getDefaultAxisX().getInterval().end) / 2,
-        y: chartXY.getDefaultAxisY().getInterval().start,
+        x: event.margins.left + event.viewportWidth / 2,
+        y: event.margins.bottom,
     })
-}
-chartXY.forEachAxis((axis) => axis.onIntervalChange(positionLegend))
+})
 
 const theme = dashboard.getTheme()
 const textFillGood = theme.examples.positiveTextFillStyle
