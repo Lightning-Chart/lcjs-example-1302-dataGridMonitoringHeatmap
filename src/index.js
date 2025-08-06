@@ -7,7 +7,6 @@ const {
     emptyLine,
     synchronizeAxisIntervals,
     lightningChart,
-    LegendBoxBuilders,
     UIElementBuilders,
     UIOrigins,
     emptyFill,
@@ -47,16 +46,10 @@ const dataGrid = dashboard
     .setColumnContent(0, ['', ...exampleTrends.map((trend) => trend.name)])
     .setRowContent(0, ['', 'Latest value', 'Previous value', 'value 15 s'])
 
-const seriesXYList = exampleTrends.map((trend) =>
-    chartXY
-        .addPointLineAreaSeries({ dataPattern: 'ProgressiveX' })
-        .setAreaFillStyle(emptyFill)
-        .setMaxSampleCount(50_000)
-        .setName(trend.name),
-)
+const seriesXYList = exampleTrends.map((trend) => chartXY.addLineSeries({}).setMaxSampleCount(50_000).setName(trend.name))
 const axisX = chartXY
     .getDefaultAxisX()
-    .setScrollStrategy(AxisScrollStrategies.progressive)
+    .setScrollStrategy(AxisScrollStrategies.scrolling)
     .setDefaultInterval((state) => ({ end: state.dataMax, start: (state.dataMax ?? 0) - 60 * 1000, stopAxisAfter: false }))
     .setTickStrategy(AxisTickStrategies.Time)
 
@@ -67,14 +60,6 @@ const axisXTop = chartXY
     .setPointerEvents(false)
 synchronizeAxisIntervals(axisX, axisXTop)
 const indicator15s = axisXTop.addCustomTick(UIElementBuilders.AxisTickMajor).setTextFormatter((_) => '-15 s')
-
-const legend = chartXY.addLegendBox(LegendBoxBuilders.HorizontalLegendBox, chartXY.coordsRelative).add(chartXY)
-chartXY.addEventListener('layoutchange', (event) => {
-    legend.setOrigin(UIOrigins.CenterBottom).setPosition({
-        x: event.margins.left + event.viewportWidth / 2,
-        y: event.margins.bottom,
-    })
-})
 
 const theme = dashboard.getTheme()
 const textFillGood = theme.examples.positiveTextFillStyle
@@ -100,7 +85,7 @@ Promise.all(
     const streamOneSample = (sample, isFirst) => {
         const tNow = Date.now()
 
-        seriesXYList.forEach((series, iTrend) => series.add({ x: tNow - tStart, y: sample[iTrend] }))
+        seriesXYList.forEach((series, iTrend) => series.appendSample({ x: tNow - tStart, y: sample[iTrend] }))
 
         if (isFirst) {
             trendsHistory.forEach((trendHistory, iTrend) => {
