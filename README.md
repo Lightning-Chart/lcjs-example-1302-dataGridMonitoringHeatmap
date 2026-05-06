@@ -56,6 +56,6 @@ Direct developer email support can be purchased through a [Support Plan][4] or b
 © LightningChart Ltd 2009-2026. All rights reserved.
 
 
-[Data Grid]: https://lightningchart.com/js-charts/api-documentation/v8.2.0/classes/DataGrid.html
-[Chart XY]: https://lightningchart.com/js-charts/api-documentation/v8.2.0/classes/ChartXY.html
+[Data Grid]: https://lightningchart.com/js-charts/api-documentation/v8.3.0/classes/DataGrid.html
+[Chart XY]: https://lightningchart.com/js-charts/api-documentation/v8.3.0/classes/ChartXY.html
 
